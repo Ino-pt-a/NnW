@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Celestial Sign-Up</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500&family=Playfair+Display:wght@500&display=swap');
+        :root {
+            --space: #0A0E17;
+            --nebula: #6A4C93;
+            --starlight: #F8F7FF;
+            --cosmic-blue: #3A86FF;
+            --galaxy-purple: #8338EC;
+            --moon-glow: #FFD166;
+        }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--space);
+            color: var(--starlight);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-image: radial-gradient(circle at 20% 30%, rgba(106, 76, 147, 0.15) 0%, transparent 25%), radial-gradient(circle at 80% 70%, rgba(58, 134, 255, 0.15) 0%, transparent 25%);
+        }
+        .celestial-container {
+            background: rgba(10, 14, 23, 0.8);
+            border-radius: 12px;
+            padding: 1.5rem;
+            width: 500px;
+            border: 1px solid rgba(131, 56, 236, 0.3);
+            box-shadow: 0 0 15px rgba(131, 56, 236, 0.3), inset 0 0 10px rgba(58, 134, 255, 0.2);
+            backdrop-filter: blur(8px);
+        }
+        h1 {
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.2rem;
+            color: var(--starlight);
+        }
+        h1::after {
+            content: "✦ ✧ ✦";
+            display: block;
+            font-size: 0.9rem;
+            letter-spacing: 3px;
+            color: var(--moon-glow);
+            margin-top: 0.3rem;
+            opacity: 0.7;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.3rem;
+            font-size: 0.8rem;
+            color: var(--starlight);
+        }
+        input {
+            width: 100%;
+            padding: 0.6rem;
+            background: rgba(15, 20, 35, 0.7);
+            border: 1px solid var(--nebula);
+            border-radius: 6px;
+            color: var(--starlight);
+            font-size: 0.9rem;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--cosmic-blue);
+            box-shadow: 0 0 0 2px rgba(58, 134, 255, 0.2);
+        }
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+        .radio-option input {
+            width: auto;
+            margin-right: 0.5rem;
+        }
+        .btn {
+            width: 100%;
+            padding: 0.7rem;
+            background: linear-gradient(45deg, var(--galaxy-purple), var(--cosmic-blue));
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem;
+            margin-top: 0.8rem;
+            cursor: pointer;
+        }
+        .shooting-star {
+            position: fixed;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            filter: blur(0.5px);
+            animation: shoot 3s linear infinite;
+        }
+        .shooting-star::before {
+            content: "";
+            position: absolute;
+            width: 60px;
+            height: 1px;
+            background: linear-gradient(90deg, white, transparent);
+            top: 50%;
+            left: 0;
+        }
+        @keyframes shoot {
+            0% { transform: translate(0, 0) rotate(-30deg); opacity: 1; }
+            100% { transform: translate(300px, 150px) rotate(-30deg); opacity: 0; }
+        }
+        .back-btn {
+            display: block;
+            margin-top: 0.8rem;
+            text-align: center;
+            color: var(--moon-glow);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .back-btn:hover {
+            color: var(--cosmic-blue);
+            text-shadow: 0 0 5px rgba(58, 134, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+<div class="shooting-star" style="top:15%; left:10%;"></div>
+<div class="shooting-star" style="top:25%; left:80%; animation-delay:1.5s;"></div>
+
+<div class="celestial-container">
+    <h1>Join the Cosmos</h1>
+    <form th:action="@{/registration}" th:object="${user}" method="post">
+        <div class="form-group">
+            <label for="username">Stellar Name</label>
+            <input type="text" id="username" th:field="*{username}" required placeholder="e.g. Andromeda">
+        </div>
+        <div class="form-group">
+            <label for="lastName">Stellar Surname</label>
+            <input type="text" id="lastName" th:field="*{lastName}" required placeholder="e.g. Jupiter">
+        </div>
+        <div class="form-group">
+            <label for="age">Stellar Age</label>
+            <input type="text" id="age" th:field="*{age}" required placeholder="e.g. 4605">
+        </div>
+        <div class="form-group">
+            <label for="email">Celestial Email</label>
+            <input type="email" id="email" th:field="*{email}" required placeholder="your.name@galaxy.com">
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" th:field="*{password}" required>
+        </div>
+        <div class="form-group">
+            <label>Account Type</label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" th:field="*{roles}" th:value="1" id="roleUser" checked>
+                    <label for="roleUser">Stargazer</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" th:field="*{roles}" th:value="3" id="roleAdmin">
+                    <label for="roleAdmin">Cosmic Admin</label>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn">Launch Into Orbit</button>
+        <a href="javascript:history.back()" class="back-btn">← Back to Stars</a>
+    </form>
+</div>
+</body>
+</html>
