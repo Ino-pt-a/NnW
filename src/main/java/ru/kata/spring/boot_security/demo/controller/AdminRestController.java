@@ -37,8 +37,8 @@
         }
 
         @PostMapping
-        public User createUser(@RequestBody User user) {
-            return userService.save(user);
+        public void createUser(@RequestBody User user) {
+             userService.save(user);
         }
 
         @PutMapping("/{id}")

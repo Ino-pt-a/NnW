@@ -52,26 +52,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User save(User user) {
-        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("Password cannot be null or empty");
-        }
-
-        // Сначала сохраняем пользователя без ролей
+    public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User savedUser = userRepository.save(user);
 
-        // Затем добавляем роли
-        if (user.getRoles() != null && !user.getRoles().isEmpty()) {
-            Set<Role> managedRoles = user.getRoles().stream()
-                    .map(role -> roleService.findById(role.getId()))
-                    .collect(Collectors.toSet());
-            savedUser.setRoles(managedRoles);
-            savedUser = userRepository.save(savedUser);
-        }
+        // Подгружаем роли из БД по id
+        Set<Role> roleSet = user.getRoles().stream()
+                .map(role -> roleService.findById(role.getId()))
+                .collect(Collectors.toSet());
+        user.setRoles(roleSet);
 
-        return savedUser;
+        System.out.println("Saving user with roles: " + user.getRoles());
+        userRepository.save(user);
     }
+
 
     @Override
     public void delete(Long id) {
@@ -81,29 +74,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(Long id, User user) {
         Optional<User> userToBeUpdated = userRepository.findById(id);
-        if (userToBeUpdated.isEmpty()) {
-            throw new RuntimeException("User not found with id: " + id);
+        user.setId(userToBeUpdated.get().getId());
+
+        if (user.getPassword() == null) {
+            user.setPassword(userToBeUpdated.get().getPassword());
+        } else {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
-        User existingUser = userToBeUpdated.get();
-        existingUser.setUsername(user.getUsername());
-        existingUser.setLastName(user.getLastName());
-        existingUser.setAge(user.getAge());
-        existingUser.setEmail(user.getEmail());
-
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-
-        if (user.getRoles() != null) {
-            Set<Role> managedRoles = user.getRoles().stream()
-                    .map(role -> roleService.findById(role.getId()))
-                    .collect(Collectors.toSet());
-            existingUser.setRoles(managedRoles);
-        }
-
-        return userRepository.save(existingUser);
+        userRepository.save(user);
+        return user;
     }
+
 
     @Override
     public User findByUsername(String username) {
